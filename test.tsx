@@ -1,16 +1,78 @@
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
-import { I18nContext, I18nManager } from "@shopify/react-i18n";
+import React, { ReactNode } from "react";
+import { renderToString } from "react-dom/server";
+import i18next, { TFunction } from "i18next";
+import {
+  initReactI18next,
+  I18nextProvider as I18nextProvider,
+  useTranslation,
+} from "react-i18next";
+import {
+  I18nContext as ShopifyI18nContext,
+  I18nManager,
+  I18n,
+  useI18n,
+} from "@shopify/react-i18n";
 
-function createShopifyI18n(locale: string) {
-  const manager = new I18nManager({ locale });
-  return manager;
-}
+// ref: translation-platform
+const LOCALES = [
+  // AVAILABLE_SOURCE_LOCALES
+  "en",
+  "en-US",
+  // Canada
+  "en-CA",
+  // AVAILABLE_TARGET_LOCALES
+  "cs",
+  "da",
+  "de",
+  "es",
+  "fi",
+  "fr",
+  "hi",
+  "hi-IN",
+  "it",
+  "ja",
+  "ko",
+  "ms",
+  "nb",
+  "nb-NO",
+  "nl",
+  "pl",
+  "pt-BR",
+  "pt-PT",
+  "sv",
+  "th",
+  "tr",
+  "vi",
+  "zh-CN",
+  "zh-TW",
+  // DEFAULT_NON_BLOCKING_TARGET_LOCALES
+  "cs",
+  "hi",
+  "hi-IN",
+  "ko",
+  "ms",
+  "nb-NO",
+  "pl",
+  "pt-PT",
+  "tr",
+  "vi",
+  // EXTRA_TARGET_LOCALES
+  "bg-BG",
+  "el",
+  "hr-HR",
+  "hu",
+  "id",
+  "lt-LT",
+  "ro-RO",
+  "ru",
+  "sk-SK",
+  "sl-SI",
+];
 
-function createI18next(lng: string) {
-  const instance = i18next.createInstance();
-  instance.use(initReactI18next);
-  instance.init({
+function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
+  const i18n = i18next.createInstance();
+  i18n.use(initReactI18next);
+  i18n.init({
     resources: {
       fallback: {
         translation: {
@@ -24,24 +86,59 @@ function createI18next(lng: string) {
     fallbackLng: "fallback",
     lng,
   });
-  return instance;
+  function Component() {
+    const { t } = useTranslation();
+    return callback(t);
+  }
+  return renderToString(
+    <I18nextProvider i18n={i18n}>
+      <Component />
+    </I18nextProvider>
+  );
 }
 
-test.todo("translate");
+function renderShopify(locale: string, callback: (i18n: I18n) => ReactNode) {
+  const i18n = new I18nManager({ locale });
+  function Component() {
+    const [i18n] = useI18n();
+    return callback(i18n);
+  }
+  return renderToString(
+    <ShopifyI18nContext.Provider value={i18n}>
+      <Component />
+    </ShopifyI18nContext.Provider>
+  );
+}
 
-test.todo("formatNumber");
-test.todo("formatCurrency");
-test.todo("formatPercentage");
-test.todo("formatDate");
-test.todo("formatName");
+describe.each(LOCALES)("locale: %s", (locale) => {
+  test.todo("translate");
 
-test.todo("unformatNumber");
-test.todo("unformatCurrency");
+  describe("formatNumber", () => {
+    describe("as: number", () => {
+      test("simple", () => {
+        const val = 123.456;
+        const result = renderI18next(locale, (t) => t("number", { val }));
+        const expected = renderShopify(locale, (i18n) =>
+          i18n.formatNumber(val)
+        );
+        expect(result).toEqual(expected);
+      });
+    });
+  });
 
-test.todo("weekStartDay");
-test.todo("getCurrencySymbol");
-test.todo("ordinal");
-test.todo("numberSymbols");
+  test.todo("formatCurrency");
+  test.todo("formatPercentage");
+  test.todo("formatDate");
+  test.todo("formatName");
+
+  test.todo("unformatNumber");
+  test.todo("unformatCurrency");
+
+  test.todo("weekStartDay");
+  test.todo("getCurrencySymbol");
+  test.todo("ordinal");
+  test.todo("numberSymbols");
+});
 
 // Not used in shopify/web
 test.skip("hasEasternNameOrderFormatter", () => {});
