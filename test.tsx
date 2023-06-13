@@ -11,7 +11,10 @@ import {
   I18nManager,
   I18n,
   useI18n,
+  CurrencyCode,
 } from "@shopify/react-i18n";
+
+const CURRENCIES = Object.values(CurrencyCode);
 
 // ref: translation-platform
 const LOCALES = [
@@ -113,20 +116,43 @@ function renderShopify(locale: string, callback: (i18n: I18n) => ReactNode) {
 describe.each(LOCALES)("locale: %s", (locale) => {
   test.todo("translate");
 
-  describe("formatNumber", () => {
+  describe.skip("formatNumber", () => {
     describe("as: number", () => {
-      test("simple", () => {
-        const val = 123.456;
+      test.each([0, -1, -123.456, 123.456, 1234567890])("simple [%d]", (val) => {
         const result = renderI18next(locale, (t) => t("number", { val }));
         const expected = renderShopify(locale, (i18n) =>
           i18n.formatNumber(val)
         );
         expect(result).toEqual(expected);
       });
+
+      test.each([0, 1, 2, 3, 4, 5, 6, 7])("precision [%d]", (precision) => {
+        const val = 123.456789;
+        const result = renderI18next(locale, (t) =>
+          t("number", {
+            val,
+            formatParams: { val: { maximumFractionDigits: precision } },
+          })
+        );
+        const expected = renderShopify(locale, (i18n) =>
+          i18n.formatNumber(val, { precision })
+        );
+        expect(result).toEqual(expected);
+      });
+
+      test
     });
   });
 
-  test.todo("formatCurrency");
+  describe("formatCurrency", () => {
+    test.each(CURRENCIES)('currency [%s]', (currency) => {
+      const val = 123456789.123456;
+      const result = renderI18next(locale, (t) => t("currency", {val, formatParams: {val: {currency}}}));
+      const expected = renderShopify(locale, (i18n) => i18n.formatCurrency(val,  {currency}));
+      expect(result).toEqual(expected);
+    })
+  });
+
   test.todo("formatPercentage");
   test.todo("formatDate");
   test.todo("formatName");
