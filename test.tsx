@@ -27,22 +27,25 @@ function createI18next(lng: string) {
   return instance;
 }
 
-test.todo("translate", () => {});
+test.todo("translate");
 
-test.todo("formatNumber", () => {});
-test.todo("formatCurrency", () => {});
-test.todo("formatPercentage", () => {});
-test.todo("formatDate", () => {});
-test.todo("formatName", () => {});
+test.todo("formatNumber");
+test.todo("formatCurrency");
+test.todo("formatPercentage");
+test.todo("formatDate");
+test.todo("formatName");
 
-test.todo("unformatNumber", () => {});
-test.todo("unformatCurrency", () => {});
+test.todo("unformatNumber");
+test.todo("unformatCurrency");
 
-test.todo("weekStartDay", () => {});
-test.todo("getCurrencySymbol", () => {});
-test.todo("ordinal", () => {});
-test.todo("numberSymbols", () => {});
+test.todo("weekStartDay");
+test.todo("getCurrencySymbol");
+test.todo("ordinal");
+test.todo("numberSymbols");
 
-test.skip("hasEasternNameOrderFormatter");
-test.skip("identifyScripts");
-test.skip("identifyScript");
+// Not used in shopify/web
+test.skip("hasEasternNameOrderFormatter", () => {});
+// Not used in shopify/web
+test.skip("identifyScripts", () => {});
+// Not used in shopify/web
+test.skip("identifyScript", () => {});
