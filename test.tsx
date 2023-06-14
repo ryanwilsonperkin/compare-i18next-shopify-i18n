@@ -116,7 +116,7 @@ function renderShopify(locale: string, callback: (i18n: I18n) => ReactNode) {
 describe.each(LOCALES)("locale: %s", (locale) => {
   test.todo("translate");
 
-  describe.skip("formatNumber", () => {
+  describe("formatNumber", () => {
     describe("as: number", () => {
       test.each([0, -1, -123.456, 123.456, 1234567890])("simple [%d]", (val) => {
         const result = renderI18next(locale, (t) => t("number", { val }));
