@@ -17,27 +17,18 @@ import {
 const CURRENCIES = Object.values(CurrencyCode);
 
 // ref: translation-platform
+// Complete list of locales to test against because we use them in Web
 const LOCALES = [
-  // AVAILABLE_SOURCE_LOCALES
-  "en",
-  "en-US",
-  // Canada
-  "en-CA",
-  // AVAILABLE_TARGET_LOCALES
   "cs",
   "da",
   "de",
   "es",
   "fi",
   "fr",
-  "hi",
-  "hi-IN",
   "it",
   "ja",
   "ko",
-  "ms",
   "nb",
-  "nb-NO",
   "nl",
   "pl",
   "pt-BR",
@@ -48,28 +39,6 @@ const LOCALES = [
   "vi",
   "zh-CN",
   "zh-TW",
-  // DEFAULT_NON_BLOCKING_TARGET_LOCALES
-  "cs",
-  "hi",
-  "hi-IN",
-  "ko",
-  "ms",
-  "nb-NO",
-  "pl",
-  "pt-PT",
-  "tr",
-  "vi",
-  // EXTRA_TARGET_LOCALES
-  "bg-BG",
-  "el",
-  "hr-HR",
-  "hu",
-  "id",
-  "lt-LT",
-  "ro-RO",
-  "ru",
-  "sk-SK",
-  "sl-SI",
 ];
 
 function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
