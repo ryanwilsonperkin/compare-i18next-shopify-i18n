@@ -87,13 +87,16 @@ describe.each(LOCALES)("locale: %s", (locale) => {
 
   describe("formatNumber", () => {
     describe("as: number", () => {
-      test.each([0, -1, -123.456, 123.456, 1234567890])("simple [%d]", (val) => {
-        const result = renderI18next(locale, (t) => t("number", { val }));
-        const expected = renderShopify(locale, (i18n) =>
-          i18n.formatNumber(val)
-        );
-        expect(result).toEqual(expected);
-      });
+      test.each([0, -1, -123.456, 123.456, 1234567890])(
+        "simple [%d]",
+        (val) => {
+          const result = renderI18next(locale, (t) => t("number", { val }));
+          const expected = renderShopify(locale, (i18n) =>
+            i18n.formatNumber(val)
+          );
+          expect(result).toEqual(expected);
+        }
+      );
 
       test.each([0, 1, 2, 3, 4, 5, 6, 7])("precision [%d]", (precision) => {
         const val = 123.456789;
@@ -109,17 +112,21 @@ describe.each(LOCALES)("locale: %s", (locale) => {
         expect(result).toEqual(expected);
       });
 
-      test
+      test;
     });
   });
 
   describe("formatCurrency", () => {
-    test.each(CURRENCIES)('currency [%s]', (currency) => {
+    test.each(CURRENCIES)("currency [%s]", (currency) => {
       const val = 123456789.123456;
-      const result = renderI18next(locale, (t) => t("currency", {val, formatParams: {val: {currency}}}));
-      const expected = renderShopify(locale, (i18n) => i18n.formatCurrency(val,  {currency}));
+      const result = renderI18next(locale, (t) =>
+        t("currency", { val, formatParams: { val: { currency } } })
+      );
+      const expected = renderShopify(locale, (i18n) =>
+        i18n.formatCurrency(val, { currency })
+      );
       expect(result).toEqual(expected);
-    })
+    });
   });
 
   test.todo("formatPercentage");
