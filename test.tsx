@@ -130,7 +130,16 @@ describe.each(LOCALES)("locale: %s", (locale) => {
     });
   });
 
-  test.todo("formatPercentage");
+  describe("formatPercentage", () => {
+    test.each([0, 0.5, -0.75, 100, 0, 10000])("percentage [%d]", (val) => {
+      const result = renderI18next(locale, (t) => t("number", { val, style: "percent"}));
+      const expected = renderShopify(locale, (i18n) =>
+        i18n.formatPercentage(val)
+      );
+      expect(result).toEqual(expected);
+    });
+  });
+
   test.todo("formatDate");
   test.todo("formatName");
 
