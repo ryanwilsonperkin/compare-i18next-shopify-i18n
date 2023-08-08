@@ -13,6 +13,7 @@ import {
   useI18n,
   CurrencyCode,
 } from "@shopify/react-i18n";
+import { formatCurrencyTest } from "./formatCurrency";
 
 const CURRENCIES = Object.values(CurrencyCode);
 
@@ -120,7 +121,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
     test.each(CURRENCIES)("currency [%s]", (currency) => {
       const val = 123456789.123456;
       const result = renderI18next(locale, (t) =>
-        t("currency", { val, formatParams: { val: { currency } } })
+        formatCurrencyTest(val, locale, currency)
       );
       const expected = renderShopify(locale, (i18n) =>
         i18n.formatCurrency(val, { currency })
