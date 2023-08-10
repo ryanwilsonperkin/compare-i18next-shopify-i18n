@@ -77,7 +77,7 @@ function latinLocale(locale?: string) {
 }
 
 function getCurrencySymbol(locale: string, options: Intl.NumberFormatOptions) {
-  const currencyStringRaw = formatCurrency(0, locale, options);
+  const currencyStringRaw = formatCurrencyNumber(0, locale, options);
   const controlChars = new RegExp(
     `${UnicodeCharacterSet.DirectionControl}*`,
     "gu"
@@ -100,7 +100,7 @@ function getCurrencySymbol(locale: string, options: Intl.NumberFormatOptions) {
   return elements;
 }
 
-function formatCurrency(
+function formatCurrencyNumber(
   amount: number,
   locale: string,
   options: Intl.NumberFormatOptions
@@ -158,7 +158,7 @@ function formatCurrencyNone(
       }).format(amount);;
   }
 
-export function formatCurrencyTest(
+export function formatCurrency(
     amount: any,
     locale: string,
     currency: CurrencyCode
