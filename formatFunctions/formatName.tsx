@@ -22,11 +22,13 @@ const EASTERN_NAME_ORDER_FORMATTERS = new Map([
 ]);
 
 export function formatName(
-    name: {
-  firstName?: string;
-  lastName?: string;
-  options?: { full?: boolean };
-}, locale: string,) {
+  name: {
+    firstName?: string;
+    lastName?: string;
+    options?: { full?: boolean };
+  },
+  locale: string
+) {
   if (!name.firstName) {
     return name.lastName || "";
   }
@@ -36,8 +38,7 @@ export function formatName(
 
   const isFullName = Boolean(name.options && name.options.full);
 
-  const customNameFormatter =
-  EASTERN_NAME_ORDER_FORMATTERS.get(locale);
+  const customNameFormatter = EASTERN_NAME_ORDER_FORMATTERS.get(locale);
 
   if (customNameFormatter) {
     return customNameFormatter(name.firstName, name.lastName, isFullName);

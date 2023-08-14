@@ -18,6 +18,7 @@ import {
   formatCurrency,
   formatName,
   dateStyleOptions,
+  weekStartDay,
 } from "./formatFunctions";
 
 const CURRENCIES = Object.values(CurrencyCode);
@@ -26,7 +27,7 @@ function crossProduct(arr1: any, arr2: any) {
   const result = [];
   for (const a of arr1) {
     for (const b of arr2) {
-      const product = {date: a, style: b};
+      const product = { date: a, style: b };
       result.push(product);
     }
   }
@@ -58,6 +59,117 @@ const LOCALES = [
   "zh-TW",
 ];
 
+// ref: from WEEK_START_DAYS map in packages/react-i18n/src/constants/index.ts in web
+// List of countries
+const COUNTRIES = [
+  "AE",
+  "AF",
+  "BH",
+  "DZ",
+  "EG",
+  "IQ",
+  "IR",
+  "JO",
+  "KW",
+  "LY",
+  "OM",
+  "QA",
+  "SA",
+  "SY",
+  "YE",
+  "AR",
+  "BO",
+  "BR",
+  "BZ",
+  "CA",
+  "CL",
+  "CO",
+  "CR",
+  "DO",
+  "EC",
+  "GT",
+  "HK",
+  "HN",
+  "IL",
+  "JM",
+  "JP",
+  "KE",
+  "KR",
+  "MO",
+  "MX",
+  "NI",
+  "PA",
+  "PE",
+  "PH",
+  "SG",
+  "SV",
+  "TW",
+  "US",
+  "VE",
+  "ZA",
+  "ZW",
+  "AD",
+  "AL",
+  "AM",
+  "AU",
+  "AZ",
+  "BE",
+  "BG",
+  "BN",
+  "BY",
+  "CH",
+  "CN",
+  "CZ",
+  "DE",
+  "DK",
+  "EE",
+  "ES",
+  "FI",
+  "FR",
+  "GB",
+  "GE",
+  "GF",
+  "GR",
+  "HR",
+  "HU",
+  "ID",
+  "IE",
+  "IN",
+  "IS",
+  "IT",
+  "KG",
+  "KZ",
+  "LB",
+  "LT",
+  "LU",
+  "LV",
+  "MA",
+  "MC",
+  "MK",
+  "MN",
+  "MY",
+  "NL",
+  "NO",
+  "NZ",
+  "PK",
+  "PL",
+  "PT",
+  "PY",
+  "RO",
+  "RS",
+  "RU",
+  "SE",
+  "SK",
+  "TH",
+  "TN",
+  "TR",
+  "UA",
+  "UY",
+  "UZ",
+  "VN",
+  "XK",
+];
+
 function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
   const i18n = i18next.createInstance();
   i18n.use(initReactI18next);
@@ -70,6 +182,7 @@ function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
           percent: "{{val, number(style: 'percent')}}",
           datetime: "{{val, datetime}}",
           name: "{{val, formatName}}",
+          weekStartDay: "{{val, weekStartDay}}",
         },
       },
     },
@@ -89,6 +202,10 @@ function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
 
   i18n.services.formatter?.add("formatName", (val, locale) => {
     return formatName(val, locale as string);
+  });
+
+  i18n.services.formatter?.add("weekStartDay", (country) => {
+    return weekStartDay(country);
   });
 
   function Component() {
@@ -173,7 +290,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
     });
   });
 
-  describe.only("formatDate", () => {
+  describe("formatDate", () => {
     const dates = [
       new Date(),
       new Date(Date.now() - 3 * 60 * 1000),
@@ -191,7 +308,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
       DateStyle.Time,
       // DateStyle.Humanize, //Need to write custom function + translation keys
       // DateStyle.DateTime,
-      undefined
+      undefined,
     ];
 
     const product = crossProduct(dates, styles);
@@ -235,13 +352,25 @@ describe.each(LOCALES)("locale: %s", (locale) => {
     });
   });
 
-  test.todo("unformatNumber");
-  test.todo("unformatCurrency");
+  describe("weekStartDay", () => {
+    test.each(COUNTRIES)("weekStartDay [%s]", (country) => {
+      const result = renderI18next(locale, (t) =>
+        t("weekStartDay", { val: country })
+      );
+      const expected = renderShopify(locale, (i18n) =>
+        i18n.weekStartDay(country)
+      );
+      expect(result).toEqual(expected);
+    });
+  });
 
-  test.todo("weekStartDay");
   test.todo("getCurrencySymbol");
   test.todo("ordinal");
   test.todo("numberSymbols");
+
+  // Only used in few spots in web
+  test.skip("unformatNumber", () => {});
+  test.skip("unformatCurrency", () => {});
 });
 
 // Not used in shopify/web

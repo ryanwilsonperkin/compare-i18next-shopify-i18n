@@ -1,4 +1,4 @@
-import {CurrencyCode} from  "@shopify/react-i18n";
+import { CurrencyCode } from "@shopify/react-i18n";
 
 export enum UnicodeCharacterSet {
   DirectionControl = "[\u200E\u200F\u202A-\u202E]",
@@ -42,19 +42,19 @@ function numberFormatCacheKey(
 
 const numberFormats = new Map<string, Intl.NumberFormat>();
 export function memoizedNumberFormatter(
-    locales?: string | string[],
-    options?: Intl.NumberFormatOptions,
-  ) {
-    // force a latin locale for number formatting
-    const latnLocales = latinLocales(locales);
-    const key = numberFormatCacheKey(latnLocales, options);
-    if (numberFormats.has(key)) {
-      return numberFormats.get(key)!;
-    }
-    const i = new Intl.NumberFormat(latnLocales, options);
-    numberFormats.set(key, i);
-    return i;
+  locales?: string | string[],
+  options?: Intl.NumberFormatOptions
+) {
+  // force a latin locale for number formatting
+  const latnLocales = latinLocales(locales);
+  const key = numberFormatCacheKey(latnLocales, options);
+  if (numberFormats.has(key)) {
+    return numberFormats.get(key)!;
   }
+  const i = new Intl.NumberFormat(latnLocales, options);
+  numberFormats.set(key, i);
+  return i;
+}
 
 function latinLocale(locale?: string) {
   if (!locale) return locale;
@@ -143,40 +143,40 @@ function getShortCurrencySymbol(currency: string, locale: string) {
 }
 
 function formatCurrencyNone(
-    amount: any,
-    locale: string,
-    options: Intl.NumberFormatOptions
-  ): string {
-    const currency = options.currency || '';
-    const adjustedPrecision = currencyDecimalPlaces.get(currency.toUpperCase());
+  amount: any,
+  locale: string,
+  options: Intl.NumberFormatOptions
+): string {
+  const currency = options.currency || "";
+  const adjustedPrecision = currencyDecimalPlaces.get(currency.toUpperCase());
 
-    return memoizedNumberFormatter(locale, {
-        style: 'decimal',
-        minimumFractionDigits: adjustedPrecision,
-        maximumFractionDigits: adjustedPrecision,
-        ...options,
-      }).format(amount);;
-  }
+  return memoizedNumberFormatter(locale, {
+    style: "decimal",
+    minimumFractionDigits: adjustedPrecision,
+    maximumFractionDigits: adjustedPrecision,
+    ...options,
+  }).format(amount);
+}
 
 export function formatCurrency(
-    amount: any,
-    locale: string,
-    currency: CurrencyCode
-  ): string {
-    const formattedAmount = formatCurrencyNone(amount, locale, {currency});
-    const negativeRegex = new RegExp(
-      `${UnicodeCharacterSet.DirectionControl}*${UnicodeCharacterSet.Negative}`,
-      "g"
-    );
-    const negativeMatch = negativeRegex.exec(formattedAmount)?.shift() || "";
+  amount: any,
+  locale: string,
+  currency: CurrencyCode
+): string {
+  const formattedAmount = formatCurrencyNone(amount, locale, { currency });
+  const negativeRegex = new RegExp(
+    `${UnicodeCharacterSet.DirectionControl}*${UnicodeCharacterSet.Negative}`,
+    "g"
+  );
+  const negativeMatch = negativeRegex.exec(formattedAmount)?.shift() || "";
 
-    const shortSymbol = getShortCurrencySymbol(currency, locale);
-    const formattedWithSymbol = shortSymbol.prefixed
-      ? `${shortSymbol.symbol}${formattedAmount}`
-      : `${formattedAmount}${shortSymbol.symbol}`;
+  const shortSymbol = getShortCurrencySymbol(currency, locale);
+  const formattedWithSymbol = shortSymbol.prefixed
+    ? `${shortSymbol.symbol}${formattedAmount}`
+    : `${formattedAmount}${shortSymbol.symbol}`;
 
-    return `${negativeMatch}${formattedWithSymbol.replace(negativeMatch, "")}`;
-  }
+  return `${negativeMatch}${formattedWithSymbol.replace(negativeMatch, "")}`;
+}
 
 const currencyDecimalPlaces = new Map([
   ["AED", 2],
