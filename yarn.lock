@@ -1261,6 +1261,11 @@
   resolved "https://registry.npmjs.org/@shopify/i18n/-/i18n-2.0.1.tgz"
   integrity sha512-jssYom4LsUGx94D1ANzxWxKdJWcRj6YLBF9+7g0HXHE/IdCMbUlTOYWbe1MK4b1hoBipuLb/537XV4+J8af8dw==
 
+"@shopify/i18next-shopify@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@shopify/i18next-shopify/-/i18next-shopify-0.2.3.tgz#66d8d084bbc84a3a2e620b2dfd1560ed6ad1043d"
+  integrity sha512-o37opeQFjyQ4RJLo0SEKrImUx6WJf9hklHz3kIYKC4NhYVbkUiqqGLwKYlnchC+nb0jnfRIEPxLzciPB0iITQg==
+
 "@shopify/react-effect@^5.0.3":
   version "5.0.3"
   resolved "https://registry.npmjs.org/@shopify/react-effect/-/react-effect-5.0.3.tgz"
