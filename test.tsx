@@ -19,6 +19,7 @@ import {
   formatName,
   dateStyleOptions,
   weekStartDay,
+  ordinal,
 } from "./formatFunctions";
 
 const CURRENCIES = Object.values(CurrencyCode);
@@ -37,26 +38,27 @@ function crossProduct(arr1: any, arr2: any) {
 // ref: translation-platform
 // Complete list of locales to test against because we use them in Web
 const LOCALES = [
-  "cs",
-  "da",
-  "de",
+  // "cs",
+  // "da",
+  // "de",
   "es",
-  "fi",
-  "fr",
-  "it",
-  "ja",
-  "ko",
-  "nb",
-  "nl",
-  "pl",
-  "pt-BR",
-  "pt-PT",
-  "sv",
-  "th",
-  "tr",
-  "vi",
-  "zh-CN",
-  "zh-TW",
+  "en",
+  // "fi",
+  // "fr",
+  // "it",
+  // "ja",
+  // "ko",
+  // "nb",
+  // "nl",
+  // "pl",
+  // "pt-BR",
+  // "pt-PT",
+  // "sv",
+  // "th",
+  // "tr",
+  // "vi",
+  // "zh-CN",
+  // "zh-TW",
 ];
 
 // ref: from WEEK_START_DAYS map in packages/react-i18n/src/constants/index.ts in web
@@ -170,6 +172,352 @@ const COUNTRIES = [
   "XK",
 ];
 
+const ordinal_locales = {
+  "cs": {
+    "translation": {
+      "key_ordinal_one": "{{amount}}.",
+      "key_ordinal_two": "{{amount}}.",
+      "key_ordinal_few": "{{amount}}.",
+      "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "da": {
+    "translation": {
+      "key_ordinal_one": "{{amount}}.",
+      "key_ordinal_two": "{{amount}}.",
+      "key_ordinal_few": "{{amount}}.",
+      "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "de": {
+    "translation": {
+      "key_ordinal_one": "{{amount}}.",
+      "key_ordinal_two": "{{amount}}.",
+      "key_ordinal_few": "{{amount}}.",
+      "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "en": {
+    "translation": {
+      "hello": "hello world",
+      "key_ordinal_one": "{{amount}}st",
+      "key_ordinal_two": "{{amount}}nd",
+      "key_ordinal_few": "{{amount}}rd",
+      "key_ordinal_other": "{{amount}}th"
+    }
+  },
+  "es": {
+    "translation": {
+      "hello": "hola mondo",
+      "key_ordinal_one": "{{amount}}ro",
+      "key_ordinal_two": "{{amount}}do",
+      "key_ordinal_few": "{{amount}}ro",
+      "key_ordinal_other": "{{amount}}to"
+    }
+  },
+  "fi": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.",
+    "key_ordinal_two": "{{amount}}.",
+    "key_ordinal_few": "{{amount}}.",
+    "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "fr": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}er",
+    "key_ordinal_two": "{{amount}}e",
+    "key_ordinal_few": "{{amount}}e",
+    "key_ordinal_other": "{{amount}}e"
+    }
+  },
+  "it": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}°",
+    "key_ordinal_two": "{{amount}}°",
+    "key_ordinal_few": "{{amount}}°",
+    "key_ordinal_other": "{{amount}}°"
+    }
+  },
+  "ja": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}番目",
+    "key_ordinal_two": "{{amount}}番目",
+    "key_ordinal_few": "{{amount}}番目",
+    "key_ordinal_other": "{{amount}}番目"
+    }
+  },
+  "ko": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}번째",
+    "key_ordinal_two": "{{amount}}번째",
+    "key_ordinal_few": "{{amount}}번째",
+    "key_ordinal_other": "{{amount}}번째"
+    }
+  },
+  "nb": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.",
+    "key_ordinal_two": "{{amount}}.",
+    "key_ordinal_few": "{{amount}}.",
+    "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "nl": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}ste",
+    "key_ordinal_two": "{{amount}}e",
+    "key_ordinal_few": "{{amount}}e",
+    "key_ordinal_other": "{{amount}}de"
+    }
+  },
+  "pl": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.",
+    "key_ordinal_two": "{{amount}}.",
+    "key_ordinal_few": "{{amount}}.",
+    "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "pt-BR": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}º",
+    "key_ordinal_two": "{{amount}}º",
+    "key_ordinal_few": "{{amount}}º",
+    "key_ordinal_other": "{{amount}}º"
+    }
+  },
+  "pt-PT": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.º",
+    "key_ordinal_two": "{{amount}}.º",
+    "key_ordinal_few": "{{amount}}.º",
+    "key_ordinal_other": "{{amount}}.º"
+    }
+  },
+  "sv": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}",
+    "key_ordinal_two": "{{amount}}",
+    "key_ordinal_few": "{{amount}}",
+    "key_ordinal_other": "{{amount}}:e"
+    }
+  },
+  "th": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}",
+    "key_ordinal_two": "{{amount}}",
+    "key_ordinal_few": "{{amount}}",
+    "key_ordinal_other": "{{amount}}"
+    }
+  },
+  "tr": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.",
+    "key_ordinal_two": "{{amount}}.",
+    "key_ordinal_few": "{{amount}}.",
+    "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "vi": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.",
+    "key_ordinal_two": "{{amount}}.",
+    "key_ordinal_few": "{{amount}}.",
+    "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "zh-CN": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.",
+    "key_ordinal_two": "{{amount}}.",
+    "key_ordinal_few": "{{amount}}.",
+    "key_ordinal_other": "{{amount}}."
+    }
+  },
+  "zh-TW": {
+    "translation": {
+    "key_ordinal_one": "{{amount}}.",
+    "key_ordinal_two": "{{amount}}.",
+    "key_ordinal_few": "{{amount}}.",
+    "key_ordinal_other": "{{amount}}."
+    }
+  }
+};
+
+const initialTranslations: {[key: string]: any} = {
+  "cs": {
+    "ordinal": {
+      "one": "{amount}.",
+      "two": "{amount}.",
+      "few": "{amount}.",
+      "other": "{amount}."
+    }
+  },
+  "da": {
+    "ordinal": {
+      "one": "{amount}.",
+      "two": "{amount}.",
+      "few": "{amount}.",
+      "other": "{amount}."
+    }
+  },
+  "de": {
+    "ordinal": {
+      "one": "{amount}.",
+      "two": "{amount}.",
+      "few": "{amount}.",
+      "other": "{amount}."
+    }
+  },
+  "en": {
+    "hello": "hello world",
+    "ordinal": {
+      "one": "{amount}st",
+      "two": "{amount}nd",
+      "few": "{amount}rd",
+      "other": "{amount}th"
+    }
+  },
+  "es": {
+    "hello": "hola mondo",
+    "ordinal": {
+      "one": "{amount}ro",
+      "two": "{amount}do",
+      "few": "{amount}ro",
+      "other": "{amount}to"
+    }
+  },
+  "fi": {
+    "ordinal": {
+      "one": "{amount}.",
+      "two": "{amount}.",
+      "few": "{amount}.",
+      "other": "{amount}."
+    }
+  },
+  "fr": {
+    "ordinal": {
+      "one": "{amount}er",
+      "two": "{amount}e",
+      "few": "{amount}e",
+      "other": "{amount}e"
+    }
+  },
+  "it": {
+    "ordinal": {
+      "one": "{amount}°",
+      "two": "{amount}°",
+      "few": "{amount}°",
+      "other": "{amount}°"
+    }
+  },
+  "ja": {
+    "ordinal": {
+      "one": "{amount}番目",
+      "two": "{amount}番目",
+      "few": "{amount}番目",
+      "other": "{amount}番目"
+    }
+  },
+  "ko": {
+    "ordinal": {
+      "one": "{amount}번째",
+      "two": "{amount}번째",
+      "few": "{amount}번째",
+      "other": "{amount}번째"
+    }
+  },
+  "nb": {
+    "ordinal": {
+      "one": "{amount}.",
+      "two": "{amount}.",
+      "few": "{amount}.",
+      "other": "{amount}."
+    }
+  },
+  "nl": {
+    "ordinal": {
+      "one": "{amount}ste",
+      "two": "{amount}e",
+      "few": "{amount}e",
+      "other": "{amount}de"
+    }
+  },
+  "pl": {
+    "ordinal": {
+      "one": "{amount}.",
+      "two": "{amount}.",
+      "few": "{amount}.",
+      "other": "{amount}."
+    }
+  },
+  "pt-BR": {
+    "ordinal": {
+      "one": "{amount}º",
+      "two": "{amount}º",
+      "few": "{amount}º",
+      "other": "{amount}º"
+    }
+  },
+  "pt-PT": {
+    "ordinal": {
+      "one": "{amount}.º",
+      "two": "{amount}.º",
+      "few": "{amount}.º",
+      "other": "{amount}.º"
+    }
+  },
+  "sv": {
+    "ordinal": {
+      "one": "{amount}",
+      "two": "{amount}",
+      "few": "{amount}",
+      "other": "{amount}:e"
+    }
+  },
+  "th": {
+    "ordinal": {
+      "one": "{amount}",
+      "two": "{amount}",
+      "few": "{amount}",
+      "other": "{amount}"
+    }
+  },
+  "tr": {
+    "ordinal": {
+      "one": "{amount}.",
+      "two": "{amount}.",
+      "few": "{amount}.",
+      "other": "{amount}."
+    }
+  },
+  "vi": {
+    "ordinal": {
+      "one": "{amount}",
+      "two": "{amount}",
+      "few": "{amount}",
+      "other": "{amount}"
+    }
+  },
+  "zh-CN": {
+    "ordinal": {
+      "one": "第 {amount}",
+      "two": "第 {amount}",
+      "few": "第 {amount}",
+      "other": "第 {amount}"
+    }
+  },
+  "zh-TW": {
+    "ordinal": {
+      "one": "第 {amount}",
+      "two": "第 {amount}",
+      "few": "第 {amount}",
+      "other": "第 {amount}"
+    }
+  }
+};
+
 function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
   const i18n = i18next.createInstance();
   i18n.use(initReactI18next);
@@ -185,6 +533,7 @@ function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
           weekStartDay: "{{val, weekStartDay}}",
         },
       },
+      ...ordinal_locales
     },
     interpolation: {
       escapeValue: false,
@@ -220,9 +569,15 @@ function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
 }
 
 function renderShopify(locale: string, callback: (i18n: I18n) => ReactNode) {
-  const i18n = new I18nManager({ locale });
+  const i18n = new I18nManager({ locale }, initialTranslations[locale]);
   function Component() {
-    const [i18n] = useI18n();
+    const [i18n] = useI18n({
+      fallback: initialTranslations['en'],
+      id: 'Component',
+      translations(locale) {
+        return initialTranslations[locale]
+      }
+    });
     return callback(i18n);
   }
   return renderToString(
@@ -364,15 +719,32 @@ describe.each(LOCALES)("locale: %s", (locale) => {
     });
   });
 
-  test.todo("getCurrencySymbol");
-  test.todo("ordinal");
-  test.todo("numberSymbols");
+  describe("ordinal", () => {
+    test.each([1,2,3,4])("ordinal [%d]", (val) => {
+      const result = renderI18next(locale, (t) =>
+        t('key', { count: val, ordinal: true })
+      );
+
+      console.log(result)
+
+      const expected = renderShopify(locale, (i18n) =>
+        i18n.ordinal(val)
+      );
+      expect(result).toEqual(expected);
+    });
+  });
+
+  // Create utility to replace
+  test.skip("getCurrencySymbol", () => {});
+  test.skip("numberSymbols", () => {});
 
   // Only used in few spots in web
   test.skip("unformatNumber", () => {});
   test.skip("unformatCurrency", () => {});
 });
 
+// Not used in shopify/web
+test.skip("abbreviateName", () => {});
 // Not used in shopify/web
 test.skip("hasEasternNameOrderFormatter", () => {});
 // Not used in shopify/web

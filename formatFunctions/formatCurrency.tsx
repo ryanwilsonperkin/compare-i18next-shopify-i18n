@@ -111,7 +111,7 @@ function formatCurrencyNumber(
   }).format(amount);
 }
 
-function getShortCurrencySymbol(currency: string, locale: string) {
+export function getShortCurrencySymbol(currency: string, locale: string) {
   const regionCode = currency.substring(0, 2);
   let shortSymbolResult: { symbol: string; prefixed: boolean };
 
