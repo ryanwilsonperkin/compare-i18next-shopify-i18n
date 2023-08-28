@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
 import { renderToString } from "react-dom/server";
 import i18next, { TFunction } from "i18next";
-import ShopifyFormat from "@shopify/i18next-shopify";
 import {
   initReactI18next,
   I18nextProvider as I18nextProvider,
@@ -20,9 +19,9 @@ import {
   formatName,
   dateStyleOptions,
   weekStartDay,
-  ordinal,
 } from "./formatFunctions";
-import { initialTranslations, i18next_translations } from "./translations";
+import { initialTranslations} from "./translations";
+import { translationConverter } from './translationConverter'
 
 const CURRENCIES = Object.values(CurrencyCode);
 
@@ -174,26 +173,28 @@ const COUNTRIES = [
   "XK",
 ];
 
-
+const translationDictionaryBoth: { [key: string]: any } = translationConverter(initialTranslations);
 
 function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
   const i18n = i18next.createInstance();
-  i18n.use(ShopifyFormat).use(initReactI18next);
+  i18n.use(initReactI18next);
   i18n.init({
     resources: {
       fallback: {
         translation: {
-          currency: "{{val, formatCurrency(currency: currency)}}",
-          number: "{{val, number}}",
-          percent: "{{val, number(style: 'percent')}}",
-          datetime: "{{val, datetime}}",
-          name: "{{val, formatName}}",
-          weekStartDay: "{{val, weekStartDay}}",
+          currency: "{val, formatCurrency(currency: currency)}",
+          number: "{val, number}",
+          percent: "{val, number(style: 'percent')}",
+          datetime: "{val, datetime}",
+          name: "{val, formatName}",
+          weekStartDay: "{val, weekStartDay}",
         },
       },
-      ...i18next_translations,
+      ...translationDictionaryBoth,
     },
     interpolation: {
+      prefix: "{",
+      suffix: "}",
       escapeValue: false,
     },
     fallbackLng: "fallback",
@@ -377,7 +378,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
     });
   });
 
-  describe.only("ordinal", () => {
+  describe("ordinal", () => {
     test.each([1, 2, 3, 4, 5])("ordinal [%d]", (val) => {
       const result = renderI18next(locale, (t) =>
         t("ordinal", { count: val, ordinal: true })
@@ -386,21 +387,21 @@ describe.each(LOCALES)("locale: %s", (locale) => {
       expect(result).toEqual(expected);
     });
   });
-
-  // Create utility to replace
-  test.skip("getCurrencySymbol", () => {});
-  test.skip("numberSymbols", () => {});
-
-  // Only used in few spots in web
-  test.skip("unformatNumber", () => {});
-  test.skip("unformatCurrency", () => {});
 });
 
-// Not used in shopify/web
-test.skip("abbreviateName", () => {});
-// Not used in shopify/web
-test.skip("hasEasternNameOrderFormatter", () => {});
-// Not used in shopify/web
-test.skip("identifyScripts", () => {});
-// Not used in shopify/web
-test.skip("identifyScript", () => {});
+// // Create utility to replace
+// test.skip("getCurrencySymbol", () => {});
+// test.skip("numberSymbols", () => {});
+
+// // Only used in few spots in web
+// test.skip("unformatNumber", () => {});
+// test.skip("unformatCurrency", () => {});
+
+// // Not used in shopify/web
+// test.skip("abbreviateName", () => {});
+// // Not used in shopify/web
+// test.skip("hasEasternNameOrderFormatter", () => {});
+// // Not used in shopify/web
+// test.skip("identifyScripts", () => {});
+// // Not used in shopify/web
+// test.skip("identifyScript", () => {});
