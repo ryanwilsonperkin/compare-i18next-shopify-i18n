@@ -77,13 +77,37 @@ export const initialTranslations: { [key: string]: any } = {
     },
   },
   en: {
-    hello: "hello world",
     ordinal: {
       one: "{amount}st",
       two: "{amount}nd",
       few: "{amount}rd",
       other: "{amount}th",
     },
+    translation: {
+      ordinal: {
+        one: "{amount}st",
+        two: "{amount}nd",
+        few: "{amount}rd",
+        other: "{amount}th",
+      },
+      date: {
+        range: "{startDate}–{endDate}",
+        humanize: {
+          lessThanOneYearAgo: "{date} at {time}",
+          lessThanOneHourAgo: {
+            one: "{count} minute ago",
+            other: "{count} minutes ago",
+          },
+          lessThanOneMinuteAgo: "Just now",
+          lessThanOneWeekAgo: "{weekday} at {time}",
+          yesterday: "Yesterday at {time}",
+          today: "Today at {time}",
+          tomorrow: "Tomorrow at {time}",
+          lessThanOneWeekAway: "{weekday} at {time}",
+          lessThanOneYearAway: "{date} at {time}",
+        },
+      },
+  },
     date: {
       range: "{startDate}–{endDate}",
       humanize: {
@@ -517,22 +541,22 @@ export const initialTranslations: { [key: string]: any } = {
       few: "第 {amount}",
       other: "第 {amount}",
     },
-  },
-  date: {
-    range: "{startDate}～{endDate}",
-    humanize: {
-      lessThanOneYearAgo: "{date} {time}",
-      lessThanOneHourAgo: {
-        one: "{count} 分鐘前",
-        other: "{count} 分鐘前",
+    date: {
+      range: "{startDate}～{endDate}",
+      humanize: {
+        lessThanOneYearAgo: "{date} {time}",
+        lessThanOneHourAgo: {
+          one: "{count} 分鐘前",
+          other: "{count} 分鐘前",
+        },
+        lessThanOneMinuteAgo: "剛才",
+        lessThanOneWeekAgo: "{weekday} {time}",
+        yesterday: "昨天 {time}",
+        tomorrow: "明天 {time}",
+        today: "今天 {time}",
+        lessThanOneWeekAway: "{weekday} {time}",
+        lessThanOneYearAway: "{date} {time}",
       },
-      lessThanOneMinuteAgo: "剛才",
-      lessThanOneWeekAgo: "{weekday} {time}",
-      yesterday: "昨天 {time}",
-      tomorrow: "明天 {time}",
-      today: "今天 {time}",
-      lessThanOneWeekAway: "{weekday} {time}",
-      lessThanOneYearAway: "{date} {time}",
     },
   },
 };

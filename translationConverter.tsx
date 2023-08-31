@@ -30,3 +30,5 @@ export function translationConverter(translationBundle: TranslationDictionary,) 
   
     return newTranslationbundle;
 }
+
+// i18next.init({translations: translationConverter(shopifyFormatThing)})
