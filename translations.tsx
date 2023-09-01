@@ -83,31 +83,6 @@ export const initialTranslations: { [key: string]: any } = {
       few: "{amount}rd",
       other: "{amount}th",
     },
-    translation: {
-      ordinal: {
-        one: "{amount}st",
-        two: "{amount}nd",
-        few: "{amount}rd",
-        other: "{amount}th",
-      },
-      date: {
-        range: "{startDate}–{endDate}",
-        humanize: {
-          lessThanOneYearAgo: "{date} at {time}",
-          lessThanOneHourAgo: {
-            one: "{count} minute ago",
-            other: "{count} minutes ago",
-          },
-          lessThanOneMinuteAgo: "Just now",
-          lessThanOneWeekAgo: "{weekday} at {time}",
-          yesterday: "Yesterday at {time}",
-          today: "Today at {time}",
-          tomorrow: "Tomorrow at {time}",
-          lessThanOneWeekAway: "{weekday} at {time}",
-          lessThanOneYearAway: "{date} at {time}",
-        },
-      },
-  },
     date: {
       range: "{startDate}–{endDate}",
       humanize: {

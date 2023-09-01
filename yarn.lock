@@ -1246,7 +1246,7 @@
 
 "@shopify/dates@^2.0.3":
   version "2.0.3"
-  resolved "https://registry.npmjs.org/@shopify/dates/-/dates-2.0.3.tgz"
+  resolved "https://registry.yarnpkg.com/@shopify/dates/-/dates-2.0.3.tgz#e8961eecc6846a0b2acd138a0f16549b4e90cdfb"
   integrity sha512-M8KFecsj+3JJYLMphvwe+52WYu4j0Eqfve1r+LUL6mMwbBCC6vRo59bamHh5UoIEd44Yp2H2a0X9up/wBphavw==
   dependencies:
     "@shopify/function-enhancers" "^3.0.1"
@@ -2275,11 +2275,6 @@ inherits@2:
   version "2.0.4"
   resolved "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
-
-intl-pluralrules@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/intl-pluralrules/-/intl-pluralrules-2.0.1.tgz#de16c3df1e09437635829725e88ea70c9ad79569"
-  integrity sha512-astxTLzIdXPeN0K9Rumi6LfMpm3rvNO0iJE+h/k8Kr/is+wPbRe4ikyDjlLr6VTh/mEfNv8RjN+gu3KwDiuhqg==
 
 is-arrayish@^0.2.1:
   version "0.2.1"
