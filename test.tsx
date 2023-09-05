@@ -12,24 +12,24 @@ import {
   I18n,
   useI18n,
   CurrencyCode,
-  DateStyle,
+  DateStyle
 } from "@shopify/react-i18n";
-import {
-  formatCurrency,
-  formatName,
-  weekStartDay,
-} from "./formatFunctions";
 import { initialTranslations} from "./translations";
 import { translationConverter, translationNamespaceAdder} from './translationConverter'
 import {CustomI18n} from './i18n';
 
 const CURRENCIES = Object.values(CurrencyCode);
 
-function crossProduct(arr1: any, arr2: any) {
+function crossProduct(arr1: any, arr2: any, name?: string) {
   const result = [];
   for (const a of arr1) {
     for (const b of arr2) {
-      const product = { date: a, style: b };
+      let product;
+      if (name == 'date') {
+        product = { date: a, style: b };
+      } else {
+        product = { currency: a, form: b };
+      }
       result.push(product);
     }
   }
@@ -175,19 +175,16 @@ const COUNTRIES = [
 
 const translationDictionaryBoth: { [key: string]: any } = translationConverter(initialTranslations);
 
-function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
+function renderI18next(lng: string, callback: (i18n: CustomI18n) => ReactNode) {
   const i18n = i18next.createInstance();
   i18n.use(initReactI18next);
   i18n.init({
     resources: {
       fallback: {
         translation: {
-          currency: "{val, formatCurrency(currency: currency)}",
           number: "{val, number}",
           percent: "{val, number(style: 'percent')}",
           datetime: "{val, datetime}",
-          name: "{val, formatName}",
-          weekStartDay: "{val, weekStartDay}",
         },
       },
       ...translationNamespaceAdder(translationDictionaryBoth),
@@ -199,73 +196,6 @@ function renderI18next(lng: string, callback: (t: TFunction) => ReactNode) {
     },
     fallbackLng: "fallback",
     lng,
-  });
-
-  i18n.services.formatter?.add(
-    "formatCurrency",
-    (val, locale, { currency = "USD" }) => {
-      return formatCurrency(val, locale as string, currency);
-    }
-  );
-
-  i18n.services.formatter?.add("formatName", (val, locale) => {
-    return formatName(val, locale as string);
-  });
-
-  i18n.services.formatter?.add("weekStartDay", (country) => {
-    return weekStartDay(country);
-  });
-
-  function Component() {
-    const { t } = useTranslation();
-    return callback(t);
-  }
-  return renderToString(
-    <I18nextProvider i18n={i18n}>
-      <Component />
-    </I18nextProvider>
-  );
-}
-
-function renderI18next2(lng: string, callback: (i18n: CustomI18n) => ReactNode) {
-  const i18n = i18next.createInstance();
-  i18n.use(initReactI18next);
-  i18n.init({
-    resources: {
-      fallback: {
-        translation: {
-          currency: "{val, formatCurrency(currency: currency)}",
-          number: "{val, number}",
-          percent: "{val, number(style: 'percent')}",
-          datetime: "{val, datetime}",
-          name: "{val, formatName}",
-          weekStartDay: "{val, weekStartDay}",
-        },
-      },
-      ...translationNamespaceAdder(translationDictionaryBoth),
-    },
-    interpolation: {
-      prefix: "{",
-      suffix: "}",
-      escapeValue: false,
-    },
-    fallbackLng: "fallback",
-    lng,
-  });
-
-  i18n.services.formatter?.add(
-    "formatCurrency",
-    (val, locale, { currency = "USD" }) => {
-      return formatCurrency(val, locale as string, currency);
-    }
-  );
-
-  i18n.services.formatter?.add("formatName", (val, locale) => {
-    return formatName(val, locale as string);
-  });
-
-  i18n.services.formatter?.add("weekStartDay", (country) => {
-    return weekStartDay(country);
   });
 
   function Component() {
@@ -307,7 +237,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
       test.each([0, -1, -123.456, 123.456, 1234567890])(
         "simple [%d]",
         (val) => {
-          const result = renderI18next(locale, (t) => t("number", { val }));
+          const result = renderI18next(locale, (i18n) => i18n.t("number", { val }));
           const expected = renderShopify(locale, (i18n) =>
             i18n.formatNumber(val)
           );
@@ -317,8 +247,8 @@ describe.each(LOCALES)("locale: %s", (locale) => {
 
       test.each([0, 1, 2, 3, 4, 5, 6, 7])("precision [%d]", (precision) => {
         const val = 123.456789;
-        const result = renderI18next(locale, (t) =>
-          t("number", {
+        const result = renderI18next(locale, (i18n) =>
+        i18n.t("number", {
             val,
             formatParams: { val: { maximumFractionDigits: precision } },
           })
@@ -333,15 +263,17 @@ describe.each(LOCALES)("locale: %s", (locale) => {
     });
   });
 
-  // NOTE: doesn't cover "form" option
   describe("formatCurrency", () => {
-    test.each(CURRENCIES)("currency [%s]", (currency) => {
+    const forms = ['auto','short','explicit','none']
+    const product = crossProduct(CURRENCIES, forms);
+
+    test.each(product)("currency [%s]", (product) => {
       const val = 123456789.123456;
-      const result = renderI18next(locale, (t) =>
-        t("currency", { val, formatParams: { val: { currency } } })
-      );
+      const result = renderI18next(locale, (i18n) =>
+        i18n.formatCurrency(val, { currency: product.currency, form: product.form })
+    );
       const expected = renderShopify(locale, (i18n) =>
-        i18n.formatCurrency(val, { currency })
+        i18n.formatCurrency(val, { currency: product.currency, form: product.form })
       );
       expect(result).toEqual(expected);
     });
@@ -349,7 +281,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
 
   describe("formatPercentage", () => {
     test.each([0, 0.5, -0.75, 100, 0, 10000])("percentage [%d]", (val) => {
-      const result = renderI18next(locale, (t) => t("percent", { val }));
+      const result = renderI18next(locale, (i18n) => i18n.t("percent", { val }));
       const expected = renderShopify(locale, (i18n) =>
         i18n.formatPercentage(val)
       );
@@ -378,11 +310,11 @@ describe.each(LOCALES)("locale: %s", (locale) => {
       undefined,
     ];
 
-    const product = crossProduct(dates, styles);
+    const product = crossProduct(dates, styles, 'date');
 
     test.each(product)("datetime [%s]", (product) =>{
       const expected = renderShopify(locale, (i18n) => i18n.formatDate(product.date, {style: product.style}));
-      const result = renderI18next2(locale, (i18n) => i18n.formatDate(product.date, {style: product.style}));
+      const result = renderI18next(locale, (i18n) => i18n.formatDate(product.date, {style: product.style}));
       expect(result).toEqual(expected);
     })
   });
@@ -396,7 +328,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
       { firstName: "John", lastName: "" },
       { firstName: "John", lastName: "", options: { full: true } },
     ])("name [%s]", (name) => {
-      const result = renderI18next(locale, (t) => t("name", { val: name }));
+      const result = renderI18next(locale, (i18n) => i18n.formatName(name.firstName, name.lastName, name.options));
       const expected = renderShopify(locale, (i18n) =>
         i18n.formatName(name.firstName, name.lastName, name.options)
       );
@@ -406,8 +338,8 @@ describe.each(LOCALES)("locale: %s", (locale) => {
 
   describe("weekStartDay", () => {
     test.each(COUNTRIES)("weekStartDay [%s]", (country) => {
-      const result = renderI18next(locale, (t) =>
-        t("weekStartDay", { val: country })
+      const result = renderI18next(locale, (i18n) =>
+         i18n.weekStartDay(country)
       );
       const expected = renderShopify(locale, (i18n) =>
         i18n.weekStartDay(country)
@@ -418,8 +350,8 @@ describe.each(LOCALES)("locale: %s", (locale) => {
 
   describe("ordinal", () => {
     test.each([1, 2, 3, 4, 5])("ordinal [%d]", (val) => {
-      const result = renderI18next(locale, (t) =>
-        t("ordinal", { count: val, ordinal: true })
+      const result = renderI18next(locale, (i18n) =>
+        i18n.t("ordinal", { count: val, ordinal: true })
       );
       const expected = renderShopify(locale, (i18n) => i18n.ordinal(val));
       expect(result).toEqual(expected);
