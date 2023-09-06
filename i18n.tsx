@@ -15,11 +15,11 @@ import {
 import { TFunction } from "i18next";
 
 export interface NumberFormatOptions extends Intl.NumberFormatOptions {
-  as?: 'number' | 'currency' | 'percent';
+  as?: "number" | "currency" | "percent";
   precision?: number;
 }
 interface CurrencyFormatOptions extends NumberFormatOptions {
-  form?: 'auto' | 'short' | 'explicit' | 'none';
+  form?: "auto" | "short" | "explicit" | "none";
 }
 
 enum UnicodeCharacterSet {
@@ -197,22 +197,22 @@ const WEEK_START_DAYS = new Map([
 
 const EASTERN_NAME_ORDER_FORMATTERS = new Map([
   [
-    'ko',
+    "ko",
     (firstName: string, lastName: string, full: boolean) =>
       full ? `${lastName}${firstName}` : lastName,
   ],
   [
-    'ja',
+    "ja",
     (firstName: string, lastName: string, full: boolean) =>
       full ? `${lastName}${firstName}` : `${lastName}様`,
   ],
   [
-    'zh-CN',
+    "zh-CN",
     (firstName: string, lastName: string, full: boolean) =>
       full ? `${lastName}${firstName}` : lastName,
   ],
   [
-    'zh-TW',
+    "zh-TW",
     (firstName: string, lastName: string, full: boolean) =>
       full ? `${lastName}${firstName}` : lastName,
   ],
@@ -405,8 +405,8 @@ const currencyDecimalPlaces = new Map([
 ]);
 
 const CurrencyShortFormException = {
-  BRL: 'R$',
-  HKD: 'HK$',
+  BRL: "R$",
+  HKD: "HK$",
 } as const;
 
 const UNICODE_NUMBERING_SYSTEM = "-u-nu-";
@@ -463,20 +463,17 @@ function latinLocale(locale?: string) {
   }
 }
 
-function getCurrencySymbol(
-  locale: string,
-  options: Intl.NumberFormatOptions,
-) {
+function getCurrencySymbol(locale: string, options: Intl.NumberFormatOptions) {
   const currencyStringRaw = formatCurrency(0, locale, options);
   const controlChars = new RegExp(
     `${UnicodeCharacterSet.DirectionControl}*`,
-    'gu',
+    "gu"
   );
-  const currencyString = currencyStringRaw.replace(controlChars, '');
+  const currencyString = currencyStringRaw.replace(controlChars, "");
   const matchResult = /\p{Nd}\p{Po}*\p{Nd}*/gu.exec(currencyString);
   if (!matchResult) {
     throw new Error(
-      `Number input in locale ${locale} is currently not supported.`,
+      `Number input in locale ${locale} is currently not supported.`
     );
   }
   const formattedAmount = matchResult[0];
@@ -484,19 +481,19 @@ function getCurrencySymbol(
     currencyString.split(formattedAmount);
   const elements = {
     symbol: currencyPrefix || currencySuffix,
-    prefixed: currencyPrefix !== '',
+    prefixed: currencyPrefix !== "",
   };
 
   return elements;
 }
 
-export function formatCurrency(
+function formatCurrency(
   amount: number,
   locale: string,
-  options: Intl.NumberFormatOptions,
+  options: Intl.NumberFormatOptions
 ) {
   return memoizedNumberFormatter(locale, {
-    style: 'currency',
+    style: "currency",
     ...options,
   }).format(amount);
 }
@@ -512,27 +509,48 @@ export class CustomI18n {
     this.t = t;
   }
 
+  formatNumber(
+    amount: number,
+    { as, precision, ...options }: NumberFormatOptions = {}
+  ): string {
+    console.log(
+      this.t("number", {
+        amount,
+      })
+    );
+    return this.t("number", {
+      amount,
+      formatParams: { val: { maximumFractionDigits: precision } },
+    });
+  }
+
+  formatPercentage(amount: number, options?: Intl.NumberFormatOptions): string {
+    return this.t("percent", {
+      amount,
+    });
+  }
+
   formatCurrency(
     amount: number,
-    {form, ...options}: CurrencyFormatOptions = {},
+    { form, ...options }: CurrencyFormatOptions = {}
   ) {
     switch (form) {
-      case 'auto':
+      case "auto":
         return this.formatCurrencyAuto(amount, options);
-      case 'explicit':
+      case "explicit":
         return this.formatCurrencyExplicit(amount, options);
-      case 'short':
+      case "short":
         return this.formatCurrencyShort(amount, options);
-      case 'none':
+      case "none":
         return this.formatCurrencyNone(amount, options);
       default:
         return this.formatCurrencyAuto(amount, options);
     }
   }
-  
+
   private formatCurrencyAuto(
     amount: number,
-    options: Intl.NumberFormatOptions = {},
+    options: Intl.NumberFormatOptions = {}
   ): string {
     // use the short format if we can't determine a currency match, or if the
     // currencies match, use explicit when the currencies definitively do not
@@ -549,10 +567,10 @@ export class CustomI18n {
 
   private formatCurrencyExplicit(
     amount: number,
-    options: Intl.NumberFormatOptions = {},
+    options: Intl.NumberFormatOptions = {}
   ): string {
     const value = this.formatCurrencyShort(amount, options);
-    const isoCode = options.currency || this.defaultCurrency || '';
+    const isoCode = options.currency || this.defaultCurrency || "";
     if (value.includes(isoCode)) {
       return value;
     }
@@ -561,36 +579,36 @@ export class CustomI18n {
 
   private formatCurrencyShort(
     amount: number,
-    options: NumberFormatOptions = {},
+    options: NumberFormatOptions = {}
   ): string {
     const formattedAmount = this.formatCurrencyNone(amount, options);
     const negativeRegex = new RegExp(
       `${UnicodeCharacterSet.DirectionControl}*${UnicodeCharacterSet.Negative}`,
-      'g',
+      "g"
     );
-    const negativeMatch = negativeRegex.exec(formattedAmount)?.shift() || '';
+    const negativeMatch = negativeRegex.exec(formattedAmount)?.shift() || "";
 
     const shortSymbol = this.getShortCurrencySymbol(options.currency);
     const formattedWithSymbol = shortSymbol.prefixed
       ? `${shortSymbol.symbol}${formattedAmount}`
       : `${formattedAmount}${shortSymbol.symbol}`;
 
-    return `${negativeMatch}${formattedWithSymbol.replace(negativeMatch, '')}`;
+    return `${negativeMatch}${formattedWithSymbol.replace(negativeMatch, "")}`;
   }
 
   private formatCurrencyNone(
     amount: number,
-    options: NumberFormatOptions = {},
+    options: NumberFormatOptions = {}
   ): string {
-    const {locale} = this;
+    const { locale } = this;
     let adjustedPrecision = options.precision;
     if (adjustedPrecision === undefined) {
-      const currency = options.currency || this.defaultCurrency || '';
+      const currency = options.currency || this.defaultCurrency || "";
       adjustedPrecision = currencyDecimalPlaces.get(currency.toUpperCase());
     }
 
     return memoizedNumberFormatter(locale, {
-      style: 'decimal',
+      style: "decimal",
       minimumFractionDigits: adjustedPrecision,
       maximumFractionDigits: adjustedPrecision,
       ...options,
@@ -598,11 +616,11 @@ export class CustomI18n {
   }
 
   private getShortCurrencySymbol(
-    currency: string = this.defaultCurrency || '',
-    locale: string = this.locale,
+    currency: string = this.defaultCurrency || "",
+    locale: string = this.locale
   ) {
     const regionCode = currency.substring(0, 2);
-    let shortSymbolResult: {symbol: string; prefixed: boolean};
+    let shortSymbolResult: { symbol: string; prefixed: boolean };
 
     // currencyDisplay: 'narrowSymbol' was added to iOS in v14.5. See https://caniuse.com/?search=currencydisplay
     // We still support ios 12/13, so we need to check if this works and fallback to the default if not
@@ -610,10 +628,10 @@ export class CustomI18n {
     try {
       shortSymbolResult = getCurrencySymbol(locale, {
         currency,
-        currencyDisplay: 'narrowSymbol',
+        currencyDisplay: "narrowSymbol",
       });
     } catch {
-      shortSymbolResult = getCurrencySymbol(locale, {currency});
+      shortSymbolResult = getCurrencySymbol(locale, { currency });
     }
 
     if (currency in CurrencyShortFormException) {
@@ -623,21 +641,21 @@ export class CustomI18n {
       };
     }
 
-    const shortSymbol = shortSymbolResult.symbol.replace(regionCode, '');
+    const shortSymbol = shortSymbolResult.symbol.replace(regionCode, "");
     const alphabeticCharacters = /[A-Za-zÀ-ÖØ-öø-ÿĀ-ɏḂ-ỳ]/;
 
     return alphabeticCharacters.exec(shortSymbol)
       ? shortSymbolResult
-      : {symbol: shortSymbol, prefixed: shortSymbolResult.prefixed};
+      : { symbol: shortSymbol, prefixed: shortSymbolResult.prefixed };
   }
 
   formatName(
     firstName?: string,
     lastName?: string,
-    options?: {full?: boolean},
+    options?: { full?: boolean }
   ) {
     if (!firstName) {
-      return lastName || '';
+      return lastName || "";
     }
     if (!lastName) {
       return firstName;
@@ -645,8 +663,7 @@ export class CustomI18n {
 
     const isFullName = Boolean(options && options.full);
 
-    const customNameFormatter =
-      EASTERN_NAME_ORDER_FORMATTERS.get(this.locale)
+    const customNameFormatter = EASTERN_NAME_ORDER_FORMATTERS.get(this.locale);
 
     if (customNameFormatter) {
       return customNameFormatter(firstName, lastName, isFullName);
@@ -660,7 +677,7 @@ export class CustomI18n {
   weekStartDay(country: any): Weekday {
     if (!country) {
       throw new MissingCountryError(
-        'weekStartDay() cannot be called without a country code.',
+        "weekStartDay() cannot be called without a country code."
       );
     }
 
@@ -671,10 +688,10 @@ export class CustomI18n {
     date: Date,
     options: Intl.DateTimeFormatOptions & { style?: DateStyle } = {}
   ): string {
-    const {locale, defaultTimezone} = this;
-    const {timeZone = defaultTimezone} = options;
+    const { locale, defaultTimezone } = this;
+    const { timeZone = defaultTimezone } = options;
 
-    const {style = undefined, ...formatOptions} = options || {};
+    const { style = undefined, ...formatOptions } = options || {};
 
     if (style) {
       switch (style) {
@@ -699,12 +716,12 @@ export class CustomI18n {
 
   private formatDateTime(
     date: Date,
-    options: Intl.DateTimeFormatOptions,
+    options: Intl.DateTimeFormatOptions
   ): string {
-    const {defaultTimezone} = this;
-    const {timeZone = defaultTimezone} = options;
+    const { defaultTimezone } = this;
+    const { timeZone = defaultTimezone } = options;
 
-    return this.t('date.humanize.lessThanOneYearAway', {
+    return this.t("date.humanize.lessThanOneYearAway", {
       date: this.getDateFromDate(date, {
         ...options,
         timeZone,
@@ -724,17 +741,16 @@ export class CustomI18n {
 
   private humanizePastDate(date: Date, options?: Intl.DateTimeFormatOptions) {
     if (isLessThanOneMinuteAgo(date)) {
-      return this.t('date.humanize.lessThanOneMinuteAgo');
+      return this.t("date.humanize.lessThanOneMinuteAgo");
     }
 
     if (isLessThanOneHourAgo(date)) {
       const now = new Date();
       const minutes = Math.floor(
-        (now.getTime() - date.getTime()) / TimeUnit.Minute,
+        (now.getTime() - date.getTime()) / TimeUnit.Minute
       );
-      return this.t('date.humanize.lessThanOneHourAgo', {
+      return this.t("date.humanize.lessThanOneHourAgo", {
         count: minutes,
-        ordinal: true
       });
     }
 
@@ -746,12 +762,12 @@ export class CustomI18n {
     }
 
     if (isYesterday(date, timeZone)) {
-      return this.t('date.humanize.yesterday', {time});
+      return this.t("date.humanize.yesterday", { time });
     }
 
     if (isLessThanOneWeekAgo(date)) {
       const weekday = this.getWeekdayFromDate(date, options);
-      return this.t('date.humanize.lessThanOneWeekAgo', {
+      return this.t("date.humanize.lessThanOneWeekAgo", {
         weekday,
         time,
       });
@@ -759,7 +775,7 @@ export class CustomI18n {
 
     if (isLessThanOneYearAgo(date)) {
       const monthDay = this.getMonthDayFromDate(date, options);
-      return this.t('date.humanize.lessThanOneYearAgo', {
+      return this.t("date.humanize.lessThanOneYearAgo", {
         date: monthDay,
         time,
       });
@@ -827,7 +843,7 @@ export class CustomI18n {
       year,
       era,
       timeZone,
-      timeZoneName: timeZoneName === 'short' ? undefined : timeZoneName,
+      timeZoneName: timeZoneName === "short" ? undefined : timeZoneName,
     });
 
     return formattedDate;
@@ -907,12 +923,12 @@ export class CustomI18n {
 }
 
 class MissingCountryError extends Error {
-  constructor(additionalMessage = '') {
-    const baseErrorMessage = 'No country code provided.';
+  constructor(additionalMessage = "") {
+    const baseErrorMessage = "No country code provided.";
     super(
-      additionalMessage === ''
+      additionalMessage === ""
         ? baseErrorMessage
-        : `${baseErrorMessage} ${additionalMessage}`,
+        : `${baseErrorMessage} ${additionalMessage}`
     );
   }
 }

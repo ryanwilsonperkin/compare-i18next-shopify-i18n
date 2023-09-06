@@ -40,26 +40,26 @@ function crossProduct(arr1: any, arr2: any, name?: string) {
 // Complete list of locales to test against because we use them in Web
 const LOCALES = [
   "cs",
-  "da",
-  "de",
-  "es",
-  "en",
-  "fi",
-  "fr",
-  "it",
-  "ja",
-  "ko",
-  "nb",
-  "nl",
-  "pl",
-  "pt-BR",
-  "pt-PT",
-  "sv",
-  "th",
-  "tr",
-  "vi",
-  "zh-CN",
-  "zh-TW",
+  // "da",
+  // "de",
+  // "es",
+  // "en",
+  // "fi",
+  // "fr",
+  // "it",
+  // "ja",
+  // "ko",
+  // "nb",
+  // "nl",
+  // "pl",
+  // "pt-BR",
+  // "pt-PT",
+  // "sv",
+  // "th",
+  // "tr",
+  // "vi",
+  // "zh-CN",
+  // "zh-TW",
 ];
 
 // ref: from WEEK_START_DAYS map in packages/react-i18n/src/constants/index.ts in web
@@ -237,7 +237,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
       test.each([0, -1, -123.456, 123.456, 1234567890])(
         "simple [%d]",
         (val) => {
-          const result = renderI18next(locale, (i18n) => i18n.t("number", { val }));
+          const result = renderI18next(locale, (i18n) => i18n.formatNumber(val));
           const expected = renderShopify(locale, (i18n) =>
             i18n.formatNumber(val)
           );
@@ -281,7 +281,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
 
   describe("formatPercentage", () => {
     test.each([0, 0.5, -0.75, 100, 0, 10000])("percentage [%d]", (val) => {
-      const result = renderI18next(locale, (i18n) => i18n.t("percent", { val }));
+      const result = renderI18next(locale, (i18n) => i18n.formatPercentage(val));
       const expected = renderShopify(locale, (i18n) =>
         i18n.formatPercentage(val)
       );

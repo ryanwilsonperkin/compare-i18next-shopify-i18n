@@ -11,7 +11,7 @@ export function translationConverter(translationBundle: TranslationDictionary) {
         const inner = translationBundle[key];
         if (typeof inner === "object") {
             for (const key2 in inner) {
-                if (key2 === "one" || key2 === "two" || key2 === "few" || key2 === "other") {
+                if (key2 === "one" || key2 === "two" || key2 === "few" || key2 === "other" || key2 === "many") {
                     const originalString = inner[key2] as string;
                     const modifiedString = originalString.replace(/\bamount\b/g, 'count');
                     newTranslationbundle[`${key}_${key2}`] = modifiedString;
