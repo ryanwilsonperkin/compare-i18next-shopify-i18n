@@ -40,26 +40,26 @@ function crossProduct(arr1: any, arr2: any, name?: string) {
 // Complete list of locales to test against because we use them in Web
 const LOCALES = [
   "cs",
-  // "da",
-  // "de",
-  // "es",
-  // "en",
-  // "fi",
-  // "fr",
-  // "it",
-  // "ja",
-  // "ko",
-  // "nb",
-  // "nl",
-  // "pl",
-  // "pt-BR",
-  // "pt-PT",
-  // "sv",
-  // "th",
-  // "tr",
-  // "vi",
-  // "zh-CN",
-  // "zh-TW",
+  "da",
+  "de",
+  "es",
+  "en",
+  "fi",
+  "fr",
+  "it",
+  "ja",
+  "ko",
+  "nb",
+  "nl",
+  "pl",
+  "pt-BR",
+  "pt-PT",
+  "sv",
+  "th",
+  "tr",
+  "vi",
+  "zh-CN",
+  "zh-TW",
 ];
 
 // ref: from WEEK_START_DAYS map in packages/react-i18n/src/constants/index.ts in web
@@ -248,11 +248,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
       test.each([0, 1, 2, 3, 4, 5, 6, 7])("precision [%d]", (precision) => {
         const val = 123.456789;
         const result = renderI18next(locale, (i18n) =>
-        i18n.t("number", {
-            val,
-            formatParams: { val: { maximumFractionDigits: precision } },
-          })
-        );
+          i18n.formatNumber(val, { precision }));
         const expected = renderShopify(locale, (i18n) =>
           i18n.formatNumber(val, { precision })
         );
@@ -282,9 +278,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
   describe("formatPercentage", () => {
     test.each([0, 0.5, -0.75, 100, 0, 10000])("percentage [%d]", (val) => {
       const result = renderI18next(locale, (i18n) => i18n.formatPercentage(val));
-      const expected = renderShopify(locale, (i18n) =>
-        i18n.formatPercentage(val)
-      );
+      const expected = renderShopify(locale, (i18n) => i18n.formatPercentage(val));
       expect(result).toEqual(expected);
     });
   });
@@ -350,9 +344,7 @@ describe.each(LOCALES)("locale: %s", (locale) => {
 
   describe("ordinal", () => {
     test.each([1, 2, 3, 4, 5])("ordinal [%d]", (val) => {
-      const result = renderI18next(locale, (i18n) =>
-        i18n.t("ordinal", { count: val, ordinal: true })
-      );
+      const result = renderI18next(locale, (i18n) => i18n.ordinal(val));
       const expected = renderShopify(locale, (i18n) => i18n.ordinal(val));
       expect(result).toEqual(expected);
     });

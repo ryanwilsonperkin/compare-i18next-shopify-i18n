@@ -509,25 +509,21 @@ export class CustomI18n {
     this.t = t;
   }
 
-  formatNumber(
-    amount: number,
-    { as, precision, ...options }: NumberFormatOptions = {}
-  ): string {
-    console.log(
-      this.t("number", {
-        amount,
-      })
-    );
+  formatNumber(val: number, { precision }: NumberFormatOptions = {}): string {
     return this.t("number", {
-      amount,
+      val,
       formatParams: { val: { maximumFractionDigits: precision } },
     });
   }
 
-  formatPercentage(amount: number, options?: Intl.NumberFormatOptions): string {
+  formatPercentage(val: number, options?: Intl.NumberFormatOptions): string {
     return this.t("percent", {
-      amount,
+      val,
     });
+  }
+
+  ordinal(val: number): string {
+    return this.t("ordinal", { count: val, ordinal: true });
   }
 
   formatCurrency(
